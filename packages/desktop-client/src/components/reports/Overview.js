@@ -236,6 +236,7 @@ export default function Overview() {
       >
         <NetWorthCard accounts={accounts} />
         <CashFlowCard />
+        <AnchorLink to="/reports/category-spending">Foo</AnchorLink>
       </View>
 
       <View
