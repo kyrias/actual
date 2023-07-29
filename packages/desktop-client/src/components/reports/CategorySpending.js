@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { connect } from 'react-redux';
 
 import * as d from 'date-fns';
-import { bindActionCreators } from 'redux';
 
-import * as actions from 'loot-core/src/client/actions';
 import { send } from 'loot-core/src/platform/client/fetch';
 import * as monthUtils from 'loot-core/src/shared/months';
 
+import { useActions } from '../../hooks/useActions';
 import { styles } from '../../style';
 import { View } from '../common';
 
@@ -17,7 +15,9 @@ import Header from './Header';
 import useReport from './useReport';
 import { fromDateRepr } from './util';
 
-function CategoryAverage({ getCategories }) {
+function CategoryAverage() {
+  const { getCategories } = useActions();
+
   const [categories, setCategories] = useState({});
 
   const [allMonths, setAllMonths] = useState(null);
@@ -29,7 +29,7 @@ function CategoryAverage({ getCategories }) {
 
   const [numberOfMonthsAverage, setNumberOfMonthsAverage] = useState(3);
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState([]);
 
   const getGraphData = useMemo(() => {
     return categorySpendingSpreadsheet(
@@ -129,8 +129,4 @@ function CategoryAverage({ getCategories }) {
   );
 }
 
-export default connect(
-  // Deleting this leads to "Uncaught TypeError: dispatch is not a function"
-  state => ({}),
-  dispatch => bindActionCreators(actions, dispatch),
-)(CategoryAverage);
+export default CategoryAverage;
