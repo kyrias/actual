@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { connect } from 'react-redux';
 
 import * as d from 'date-fns';
-import { bindActionCreators } from 'redux';
 
-import * as actions from 'loot-core/src/client/actions';
 import { send } from 'loot-core/src/platform/client/fetch';
 import * as monthUtils from 'loot-core/src/shared/months';
 
+import { useActions } from '../../hooks/useActions';
 import { styles } from '../../style';
 import { View } from '../common';
 
@@ -30,7 +28,9 @@ export const categoryColorScale = [
   '#b33dc6',
 ];
 
-function CategoryAverage({ getCategories }) {
+function CategoryAverage() {
+  const { getCategories } = useActions();
+
   const [categories, setCategories] = useState({});
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [categorySelectorVisible, setCategorySelectorVisible] = useState(false);
@@ -166,8 +166,4 @@ function CategoryAverage({ getCategories }) {
   );
 }
 
-export default connect(
-  // Deleting this leads to "Uncaught TypeError: dispatch is not a function"
-  state => ({}),
-  dispatch => bindActionCreators(actions, dispatch),
-)(CategoryAverage);
+export default CategoryAverage;
