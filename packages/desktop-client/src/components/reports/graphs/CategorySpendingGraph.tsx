@@ -29,7 +29,7 @@ function CategorySpendingGraph({
         <VictoryChart
           scale={{ x: 'time', y: 'linear' }}
           theme={theme}
-          domainPadding={{ x: 0, y: 10 }}
+          domainPadding={{ x: 50, y: 10 }}
           width={width}
           height={height}
         >
