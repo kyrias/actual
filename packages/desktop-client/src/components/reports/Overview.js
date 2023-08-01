@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { VictoryBar, VictoryGroup, VictoryVoronoiContainer } from 'victory';
@@ -6,6 +6,7 @@ import { VictoryBar, VictoryGroup, VictoryVoronoiContainer } from 'victory';
 import * as monthUtils from 'loot-core/src/shared/months';
 import { integerToCurrency } from 'loot-core/src/shared/util';
 
+import { useActions } from '../../hooks/useActions';
 import { colors, styles } from '../../style';
 import AnchorLink from '../common/AnchorLink';
 import Block from '../common/Block';
@@ -16,6 +17,8 @@ import theme from './chart-theme';
 import Container from './Container';
 import DateRange from './DateRange';
 import { simpleCashFlow } from './graphs/cash-flow-spreadsheet';
+import categorySpendingSpreadsheet from './graphs/category-spending-spreadsheet';
+import CategorySpendingGraph from './graphs/CategorySpendingGraph';
 import netWorthSpreadsheet from './graphs/net-worth-spreadsheet';
 import NetWorthGraph from './graphs/NetWorthGraph';
 import Tooltip from './Tooltip';
@@ -221,6 +224,60 @@ function CashFlowCard() {
   );
 }
 
+function CategorySpendingCard() {
+  const { getCategories } = useActions();
+
+  const [categories, setCategories] = useState({});
+
+  const end = monthUtils.currentDay();
+  const start = monthUtils.subMonths(end, 3);
+
+  const params = useMemo(() => {
+    return categorySpendingSpreadsheet(
+      start,
+      end,
+      3,
+      (categories.list || []).filter(
+        category => !category.is_income && !category.hidden,
+      ),
+    );
+  }, [start, end, categories]);
+
+  const perCategorySpending = useReport('category_spending', params);
+
+  useEffect(() => {
+    getCategories().then(categories => {
+      setCategories(categories);
+    });
+  }, []);
+
+  return (
+    <Card flex={1} to="/reports/category-spending">
+      <View>
+        <View style={{ flexDirection: 'row', padding: '20px 20px 0' }}>
+          <View style={{ flex: 1 }}>
+            <Block
+              style={[styles.mediumText, { fontWeight: 500, marginBottom: 5 }]}
+              role="heading"
+            >
+              Spending
+            </Block>
+            <DateRange start={start} end={end} />
+          </View>
+        </View>
+      </View>
+      {!perCategorySpending ? null : (
+        <CategorySpendingGraph
+          start={start}
+          end={end}
+          graphData={perCategorySpending}
+          compact={true}
+        />
+      )}
+    </Card>
+  );
+}
+
 export default function Overview() {
   let accounts = useSelector(state => state.queries.accounts);
   return (
@@ -238,7 +295,6 @@ export default function Overview() {
       >
         <NetWorthCard accounts={accounts} />
         <CashFlowCard />
-        <AnchorLink to="/reports/category-spending">Foo</AnchorLink>
       </View>
 
       <View
@@ -247,20 +303,9 @@ export default function Overview() {
           flexDirection: 'row',
         }}
       >
-        <Card
-          style={[
-            {
-              color: '#a0a0a0',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: 200,
-            },
-            styles.mediumText,
-          ]}
-        >
-          More reports
-          <br /> coming soon!
-        </Card>
+        <CategorySpendingCard />
+        <div style={{ flex: 1 }} />
+        <div style={{ flex: 1 }} />
       </View>
     </View>
   );
