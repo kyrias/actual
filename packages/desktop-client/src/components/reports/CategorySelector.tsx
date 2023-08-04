@@ -24,7 +24,8 @@ export default function CategorySelector({
   const [uncheckedHidden, setUncheckedHidden] = useState(false);
   return (
     <>
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <h3 style={{ margin: '6px 0' }}>Categories</h3>
         <Button
           type="bare"
           style={{ padding: 4 }}
@@ -32,12 +33,12 @@ export default function CategorySelector({
         >
           {uncheckedHidden ? (
             <>
-              <Eye width={20} height={20} />
+              <EyeSlashed width={20} height={20} />
               {'Checked'}
             </>
           ) : (
             <>
-              <EyeSlashed width={20} height={20} />
+              <Eye width={20} height={20} />
               {'All'}
             </>
           )}
@@ -128,7 +129,7 @@ export default function CategorySelector({
                             display:
                               !isChecked && uncheckedHidden ? 'none' : 'flex',
                             flexDirection: 'row',
-                            marginBottom: 2,
+                            marginBottom: 4,
                           }}
                         >
                           <Checkbox

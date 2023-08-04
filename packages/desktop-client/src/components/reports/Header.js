@@ -88,6 +88,7 @@ function Header({
       <View
         style={{
           flexDirection: 'row',
+          flexWrap: 'wrap',
           alignItems: 'center',
           marginTop: 15,
           gap: 15,
